@@ -66,6 +66,7 @@ if [ ${#CHANGED_PACKAGES[@]} -eq 0 ]; then
   echo -e "${GREEN}✔ No packages were modified. Skipping changelog checks!${NC}"
   if [ -n "${GITHUB_OUTPUT:-}" ]; then
     echo "has_changes=false" >> "$GITHUB_OUTPUT"
+    echo "changed_packages=[]" >> "$GITHUB_OUTPUT"
   fi
   exit 0
 fi
@@ -104,6 +105,22 @@ else
   echo -e "\n${GREEN}✔ All changelogs are valid!${NC}"
   if [ -n "${GITHUB_OUTPUT:-}" ]; then
     echo "has_changes=true" >> "$GITHUB_OUTPUT"
+    
+    JSON_ARRAY="["
+    FIRST=1
+    for package_dir in "${CHANGED_PACKAGES[@]}"; do
+      if [ -d "${package_dir}" ]; then
+        package_name=$(basename "${package_dir}")
+        if [ $FIRST -eq 1 ]; then
+          JSON_ARRAY="$JSON_ARRAY\"$package_name\""
+          FIRST=0
+        else
+          JSON_ARRAY="$JSON_ARRAY,\"$package_name\""
+        fi
+      fi
+    done
+    JSON_ARRAY="$JSON_ARRAY]"
+    echo "changed_packages=$JSON_ARRAY" >> "$GITHUB_OUTPUT"
   fi
   exit 0
 fi
