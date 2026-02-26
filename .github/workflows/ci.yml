@@ -1,0 +1,13 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-lint-test:
+    uses: Volontariapp/ci-tools/.github/workflows/npm-packages-ci.yml@main
+    secrets:
+      ORG_REPO_TOKEN: ${{ secrets.ORG_REPO_TOKEN }}
