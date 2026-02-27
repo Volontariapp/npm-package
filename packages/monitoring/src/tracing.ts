@@ -3,57 +3,54 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
-import {
-    ATTR_SERVICE_NAME,
-    ATTR_SERVICE_VERSION,
-} from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 
 export interface TracingOptions {
-    serviceName: string;
-    serviceVersion?: string;
-    exporterUrl?: string;
-    metricExportIntervalMs?: number;
+  serviceName: string;
+  serviceVersion?: string;
+  exporterUrl?: string;
+  metricExportIntervalMs?: number;
 }
 
 export function initTracing(options: TracingOptions): NodeSDK {
-    const exporterUrl =
-        options.exporterUrl ??
-        process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] ??
-        'http://localhost:4317';
+  const exporterUrl =
+    options.exporterUrl ?? process.env['OTEL_EXPORTER_OTLP_ENDPOINT'] ?? 'http://localhost:4317';
 
-    const resource = resourceFromAttributes({
-        [ATTR_SERVICE_NAME]: options.serviceName,
-        [ATTR_SERVICE_VERSION]: options.serviceVersion ?? '0.0.1',
-    });
+  const resource = resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: options.serviceName,
+    [ATTR_SERVICE_VERSION]: options.serviceVersion ?? '0.0.1',
+  });
 
-    const traceExporter = new OTLPTraceExporter({ url: exporterUrl });
+  const traceExporter = new OTLPTraceExporter({ url: exporterUrl });
 
-    const metricReader = new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({ url: exporterUrl }),
-        exportIntervalMillis: options.metricExportIntervalMs ?? 15_000,
-    });
+  const metricReader = new PeriodicExportingMetricReader({
+    exporter: new OTLPMetricExporter({ url: exporterUrl }),
+    exportIntervalMillis: options.metricExportIntervalMs ?? 15_000,
+  });
 
-    const sdk = new NodeSDK({
-        resource,
-        traceExporter,
-        metricReader,
-        instrumentations: [
-            getNodeAutoInstrumentations({
-                '@opentelemetry/instrumentation-fs': { enabled: false },
-                '@opentelemetry/instrumentation-dns': { enabled: false },
-            }),
-        ],
-    });
+  const sdk = new NodeSDK({
+    resource,
+    traceExporter,
+    metricReader,
+    instrumentations: [
+      getNodeAutoInstrumentations({
+        '@opentelemetry/instrumentation-fs': { enabled: false },
+        '@opentelemetry/instrumentation-dns': { enabled: false },
+      }),
+    ],
+  });
 
-    sdk.start();
+  sdk.start();
 
-    process.on('SIGTERM', () => {
-        sdk
-            .shutdown()
-            .catch((err: unknown) => console.error('OTel SDK shutdown error', err))
-            .finally(() => process.exit(0));
-    });
+  process.on('SIGTERM', () => {
+    sdk
+      .shutdown()
+      .catch((err: unknown) => {
+        console.error('OTel SDK shutdown error', err);
+      })
+      .finally(() => process.exit(0));
+  });
 
-    return sdk;
+  return sdk;
 }
