@@ -13,7 +13,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "proto"
   ],
   "engines": {
     "node": ">=24.14.0"
@@ -21,6 +22,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "lint": "eslint src/",
+    "dev:sync-proto": "rm -rf proto && ln -s ../../../proto-registry/proto ./proto",
     "test": "echo \"No tests yet\""
   },
   "devDependencies": {
