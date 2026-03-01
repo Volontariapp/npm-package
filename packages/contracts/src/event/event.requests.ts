@@ -10,6 +10,7 @@ import { PaginationRequest } from "../common/pagination.js";
 
 export interface GetEventRequest {
   id: string;
+  test: string;
 }
 
 export interface ListEventsRequest {
