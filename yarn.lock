@@ -1607,6 +1607,7 @@ __metadata:
   resolution: "@volontariapp/contracts@workspace:packages/contracts"
   dependencies:
     "@nestjs/microservices": "npm:^11.1.14"
+    protobufjs: "npm:^8.0.0"
     rxjs: "npm:^7.8.2"
     typescript: "npm:5.7.3"
   peerDependencies:
@@ -2713,7 +2714,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"protobufjs@npm:8.0.0":
+"protobufjs@npm:8.0.0, protobufjs@npm:^8.0.0":
   version: 8.0.0
   resolution: "protobufjs@npm:8.0.0"
   dependencies:
