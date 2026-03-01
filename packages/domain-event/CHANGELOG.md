@@ -23,4 +23,4 @@ All notable changes to this project will be documented in this file.
 
 [0.1.1]: https://github.com/Volontariapp/npm-packages/pull/4
 [0.1.0]: https://github.com/Volontariapp/npm-packages/pull/PLACEHOLDER
-[0.1.2]: https://github.com/Volontariapp/npm-packages/pull/PR_PLACEHOLDER
+[0.1.2]: https://github.com/Volontariapp/npm-packages/pull/7
